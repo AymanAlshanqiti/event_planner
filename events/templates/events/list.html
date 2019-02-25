@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-	<div class="row">
+	<div class="row my-3">
 
 	{% for event in events %}
+	<div class="col-4">
 		<div class="card">
-			<div class="card-body">
+			<div class="card-body text-center">
 				<h5 class="card-title">{{event.title}}</h5>
 				<p class="card-text">{{event.description}}</p>
 				<p class="card-text">Location: {{event.location}}</p>
@@ -14,6 +15,7 @@
 				<a href="#" class="btn btn-primary">See more</a>
 			</div>
 		</div>
+	</div>
 	{% endfor %}
 	
 	</div>

@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from .forms import UserSignup, UserLogin
 from .models import Event, BookedEvent
+from django.contrib import messages
 
 def home(request):
     return render(request, 'home.html')
@@ -63,7 +64,14 @@ class Logout(View):
 
 
 def events_list(request):
+    
+
+    if request.user.is_anonymous:
+        messages.success(request, 'You have to signin first!')
+        return redirect('login')
+
     events = Event.objects.all()
+
 
     context = {
         'events': events
