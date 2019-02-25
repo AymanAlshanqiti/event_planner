@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="row my-3">
+
+	<div class="col-12">
+		<div class="card">
+			<div class="card-body text-center">
+				<h5 class="card-title">{{event.title}}</h5>
+				<p class="card-text">{{event.description}}</p>
+				<p class="card-text">Location: {{event.location}}</p>
+				<p class="card-text">Time: {{event.datetime|date:"D d M Y | H:i"}}</p>
+				<p class="card-text">Seats left: <span class="badge badge-light">{{event.seats}}</span></p>
+
+        {% if request.user != event.organizer %}
+				    <a href="#" class="btn btn-primary mx-3">Book Now</a>
+    		{%endif%}
+
+				{% if request.user == event.organizer %}
+				    <a href="{% url 'event-update' event.id %}" class="btn btn-primary">Update</a>
+    		{%endif%}
+
+
+			</div>
+		</div>
+	</div>
+  <h1></h1>
+  <div class="col-12 my-4">
+    <table class="table table-hover my-4">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col"></th>
+						<th scope="col">name</th>
+						<th scope="col">description</th>
+						<th scope="col">price</th>
+						<th scope="col">is active</th>
+						{% if request.user.is_authenticated and restaurant.owner == request.user %}
+							<th scope="col">Operations</th>
+						{% endif %}
+					</tr>
+				</thead>
+				<tbody>
+
+					{% for item in restaurant.items.all %}
+						<tr>
+							<th scope="col">{{item.id}}</th>
+							<td scope="col">
+								{% if item.pic %}
+									<img src="{{item.pic.url}}" class="rounded float-left item-pic" alt="...">
+								{% endif %}
+							</td>
+							<td scope="col">{{item.name}}</td>
+							<td scope="col">{{item.description}}</td>
+							<td scope="col">{{item.price}}</td>
+							{% if item.is_active == 1 %}
+								<td scope="col">Active</td>
+							{% else %}
+								<td scope="col">Not active</td>
+							{% endif %}
+
+							{% if request.user.is_authenticated and restaurant.owner == request.user %}
+								<th scope="col">
+									<a href="{% url 'item-update' item.id %}" class="btn btn-outline-secondary">Update</a>
+									<a href="{% url 'item-delete' item.id %}" class="btn btn-danger">Delete</a>
+								</th>
+							{% endif %}
+
+
+						</tr>
+					{% endfor %}
+
+				</tbody>
+			</table>
+	</div>
+
+
+
+	</div>
+
+{% endblock content %}

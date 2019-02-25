@@ -3,9 +3,6 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 
-
-
-
 class Location(models.Model):
 	city =  models.CharField(max_length=120)
 
@@ -31,6 +28,4 @@ class Event(models.Model):
 class BookedEvent(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "bookedevents")
 	event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name= "bookedevents")
-
-
 

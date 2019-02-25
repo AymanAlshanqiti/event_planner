@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="row my-3">
+
+	{% for event in events %}
+  <div class="col-4">
+    <div class="card my-3">
+      <div class="card-body text-center">
+        <h5 class="card-title">{{event.title}}</h5>
+        <p class="card-text">{{event.location}}</p>
+        <p class="card-text">{{event.datetime|date:"D d M Y | H:i"}}</p>
+
+        <hr>
+        <p class="card-text">Seats left: <span class="badge badge-light">{{event.seats}}</span></p>
+        <a href="{% url 'event-detail' event.id %}" class="btn btn-primary mx-3">Detail</a>
+        <a href="#" class="btn btn-primary">Book Now</a>
+      </div>
+    </div>
+  </div>
+	{% endfor %}
+
+	</div>
+
+{% endblock content %}
