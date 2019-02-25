@@ -12,12 +12,13 @@
 				<p class="card-text">Time: {{event.datetime|date:"D d M Y | H:i"}}</p>
 				<p class="card-text">Seats left: <span class="badge badge-light">{{event.seats}}</span></p>
 
-        {% if request.user != event.organizer %}
-				    <a href="#" class="btn btn-primary mx-3">Book Now</a>
+				<a href="{% url 'events-list' %}" class="btn btn-outline-secondary mx-3">Back to the events</a>
+        	{% if request.user != event.organizer %}
+				    <a href="#" class="btn btn-primary">Book</a>
     		{%endif%}
 
 				{% if request.user == event.organizer %}
-				    <a href="{% url 'event-update' event.id %}" class="btn btn-primary">Update</a>
+				    <a href="{% url 'event-update' event.id %}" class="btn btn-outline-info">Update</a>
     		{%endif%}
 
 
@@ -30,35 +31,24 @@
 				<thead>
 					<tr>
 						<th scope="col">#</th>
-						<th scope="col"></th>
-						<th scope="col">name</th>
-						<th scope="col">description</th>
-						<th scope="col">price</th>
-						<th scope="col">is active</th>
-						{% if request.user.is_authenticated and restaurant.owner == request.user %}
+						<th scope="col">Username</th>
+						<th scope="col">First name</th>
+						<th scope="col">Last name</th>
+						<th scope="col">email</th>
+						{% if request.user.is_authenticated and event.organizer == request.user %}
 							<th scope="col">Operations</th>
 						{% endif %}
 					</tr>
 				</thead>
 				<tbody>
 
-					{% for item in restaurant.items.all %}
+					{% for user.user in tickets %}
 						<tr>
-							<th scope="col">{{item.id}}</th>
-							<td scope="col">
-								{% if item.pic %}
-									<img src="{{item.pic.url}}" class="rounded float-left item-pic" alt="...">
-								{% endif %}
-							</td>
-							<td scope="col">{{item.name}}</td>
-							<td scope="col">{{item.description}}</td>
-							<td scope="col">{{item.price}}</td>
-							{% if item.is_active == 1 %}
-								<td scope="col">Active</td>
-							{% else %}
-								<td scope="col">Not active</td>
-							{% endif %}
-
+							<th scope="col">{{user.id}}</th>
+							<td scope="col">{{user.username}}</td>
+							<td scope="col">{{item.first_name}}</td>
+							<td scope="col">{{item.last_name}}</td>
+							<td scope="col">{{item.ticket}}</td>
 							{% if request.user.is_authenticated and restaurant.owner == request.user %}
 								<th scope="col">
 									<a href="{% url 'item-update' item.id %}" class="btn btn-outline-secondary">Update</a>

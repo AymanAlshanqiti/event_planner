@@ -97,8 +97,10 @@ def events_list(request):
 def event_detail(request, event_id):
 
 	event = Event.objects.get(id=event_id)
+	tickets = event.bookedevents.all()
 	context = {
 		"event": event,
+		"tickets": tickets,
 	}
 	return render(request, 'events/detail.html', context)
 

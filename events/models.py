@@ -28,4 +28,9 @@ class Event(models.Model):
 class BookedEvent(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "bookedevents")
 	event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name= "bookedevents")
+	ticket = models.PositiveIntegerField()
+
+
+	def __str__(self):
+		return "User: %s | Event: %s | Tickets: %s" % (self.user.username, self.event.title, self.ticket)
 

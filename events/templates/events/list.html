@@ -9,11 +9,13 @@
 					<div class="card-body text-center">
 						<h5 class="card-title">{{event.title}}</h5>
 						<p class="card-text">{{event.location}}</p>
-						<p class="card-text">{{event.datetime|date:"D d M Y | H:i"}}</p>
+						<p class="card-text">{{event.datetime|date:"d M Y"}}</p>
+						<p class="card-text">{{event.datetime|date:"D | h:i A"}}</p>
 						<small class="pink_color">Organizer: {{event.organizer.username}}</small>
 						<hr>
 						<p class="card-text">Seats left: <span class="badge badge-light">{{event.seats}}</span></p>
-						<a href="{% url 'event-detail' event.id %}" class="btn btn-primary mx-3">Detail</a>
+						<a href="#" class="btn btn-primary">Book</a>
+						<a href="{% url 'event-detail' event.id %}" class="btn btn-outline-secondary mx-3">Detail</a>
 					</div>
 				</div>
 			</div>
