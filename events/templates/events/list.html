@@ -22,13 +22,12 @@
 							<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: {{event.organizer.username}}</small>
 						</div>
 						</div>
-						
-						
-						
-						
+
+
+
+
 						<hr>
-						<p class="card-text">Tickets left: &nbsp<span class="badge badge-warning">{{event.seats}}</span></p>
-						<a href="#" class="btn btn-primary">Book Now</a>
+						<p class="card-text">Seats: &nbsp<span class="badge badge-warning">{{event.seats}}</span></p>
 						<a href="{% url 'event-detail' event.id %}" class="btn btn-outline-secondary mx-3">Detail</a>
 					</div>
 				</div>

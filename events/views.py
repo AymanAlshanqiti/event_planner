@@ -85,10 +85,7 @@ def user_booked_events(request):
 		messages.success(request, 'You have to signin first!')
 		return redirect('login')
 
-	booked_events = BookedEvent.objects.filter(
-		Q(user__username__icontains = request.user.username)&
-		Q(event__datetime__lte = datetime.datetime.today())
-		).distinct()
+	booked_events = BookedEvent.objects.filter(user__username__icontains = request.user.username)
 
 	context = {
 		'booked_events': booked_events
@@ -107,7 +104,6 @@ def events_list(request):
 
 	if query:
 		events = events.filter(
-			Q(datetime__gte = datetime.datetime.today())|
 			Q(title__icontains = query)|
 			Q(description__icontains = query)|
 			Q(organizer__username__icontains = query)
@@ -218,10 +214,12 @@ def booked_event(request):
 		ticket.event = event
 		ticket.ticket = user_ticket_num
 		ticket.save()
+		return redirect('event-detail', event_id)
 
 	context = {
 		"event" : event,
 		"tickets_left": tickets_left,
+		"tickets": tickets,
 	}
 
 	return render(request, 'events/detail.html', context)
