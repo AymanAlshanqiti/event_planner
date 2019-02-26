@@ -1,3 +1,16 @@
 .pink_color {
   color: #C0043E;
 }
+
+.flat_gray {
+	color: #DEDBD0;
+}
+
+.bg-black {
+	background-color: #7A1234!important;
+}
+
+.events_pic {
+	width: 200px;
+	height: 200px;
+}

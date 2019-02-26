@@ -3,38 +3,100 @@
 {% block content %}
 	<div class="row my-3">
 
-	<div class="col-12">
-		<div class="card">
-			<div class="card-body text-center">
-				<h5 class="card-title">{{event.title}}</h5>
-				<p class="card-text">{{event.description}}</p>
-				<p class="card-text">Location: {{event.location}}</p>
-				<p class="card-text">Time: {{event.datetime|date:"D d M Y | H:i"}}</p>
-				<p class="card-text">Seats left: <span class="badge badge-light">{{event.seats}}</span></p>
+		<div class="col-12">
 
-				<a href="{% url 'events-list' %}" class="btn btn-outline-secondary mx-3">Back to the events</a>
-        	{% if request.user != event.organizer %}
-				    <a href="#" class="btn btn-primary">Book</a>
-    		{%endif%}
+			<div class="card">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-6">
+							{% if event.pic %}
+								<img src="{{event.pic.url}}" class="img-thumbnail">
+							{% endif %}
+						</div>
+						<div class="col-6 my-3">
 
-				{% if request.user == event.organizer %}
-				    <a href="{% url 'event-update' event.id %}" class="btn btn-outline-info">Update</a>
-    		{%endif%}
+							<h5 class="card-title text-center">{{event.title}}</h5>
+							<p class="card-text text-center my-4 mx-3">{{event.description}}</p>
+							<hr><br>
+							<div class="row">
+								<div class="col-6">
+									<div class="card">
+										<div class="card-body">
+											<p class="card-text text-left"><i class="fas fa-map-marker-alt flat_gray">&nbsp&nbsp</i> {{event.location}}</p>
+											<p class="card-text text-left"><i class="far fa-calendar-alt flat_gray">&nbsp&nbsp</i>{{event.datetime|date:"d M Y"}}</p>
+											<p class="card-text text-left"><i class="far fa-clock flat_gray">&nbsp&nbsp</i>{{event.datetime|date:"D | h:i A"}}</p>
+											<p class="card-text">Seats: &nbsp<span class="badge badge-warning ">{{event.seats}}</span></p>
+										</div>
+									</div>
+								</div>
+								<div class="col-6">
+									<div class="card">
+										<div class="col-12">
+											<div class="card-body text-center">
+												<p class="card-text">Tickets left: &nbsp<span class="badge badge-warning ">{{tickets_left}}</span></p>
+
+              									<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: {{event.organizer.username}}</small>
+											</div>
+										</div>
+
+										<div class="col-12">
+											<form action="{% url 'booked' %}" method="POST">
+												{% csrf_token %}
+											<div class="row">
+
+													<div class="col-6">
+														{% if tickets_left == 0 %}
+															<input type="submit" class="btn btn-light" value="Full" disabled>
+														{% else %}
+															<input type="submit" class="btn btn-primary" value="Book Now">
+														{% endif %}
+													</div>
+													<div class="col-6">
+														<input type="text" name="event_id" class="form-control" hidden value="{{event.id}}">
+														<input type="number" name="ticket_num" class="form-control" min=0 max={{event.seats}}>
+													</div>
+
+											</div>
+											</form>
+										</div>
+										<br>
 
 
+									</div>
+								</div>
+							</div>
+
+							<div class="row my-2">
+								<div class="col-12 my-2">
+									<a href="{% url 'events-list' %}" class="btn btn-outline-secondary btn-block">Back to the events</a>
+								</div>
+
+								<div class="col-12 my-2">
+									{% if request.user == event.organizer %}
+								    <a href="{% url 'event-update' event.id %}" class="btn btn-outline-info btn-block">Update</a>
+				    				{%endif%}
+								</div>
+							</div>
+
+		    			</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-  <h1></h1>
-  <div class="col-12 my-4">
+
+    <div class="row my-3">
+  	<div class="col-12 my-4">
     <table class="table table-hover my-4">
+    	<h1 class="text-center">Event's tickets</h1>
 				<thead>
-					<tr>
+					<tr class="text-center">
 						<th scope="col">#</th>
 						<th scope="col">Username</th>
 						<th scope="col">First name</th>
 						<th scope="col">Last name</th>
 						<th scope="col">email</th>
+						<th scope="col">Tickets</th>
 						{% if request.user.is_authenticated and event.organizer == request.user %}
 							<th scope="col">Operations</th>
 						{% endif %}
@@ -42,17 +104,18 @@
 				</thead>
 				<tbody>
 
-					{% for user.user in tickets %}
-						<tr>
+					{% for user in tickets %}
+						<tr class="text-center">
 							<th scope="col">{{user.id}}</th>
-							<td scope="col">{{user.username}}</td>
-							<td scope="col">{{item.first_name}}</td>
-							<td scope="col">{{item.last_name}}</td>
-							<td scope="col">{{item.ticket}}</td>
-							{% if request.user.is_authenticated and restaurant.owner == request.user %}
+							<td scope="col">{{user.user.username}}</td>
+							<td scope="col">{{user.user.first_name}}</td>
+							<td scope="col">{{user.user.last_name}}</td>
+							<td scope="col">{{user.user.email}}</td>
+							<td scope="col">{{user.ticket}}</td>
+							{% if request.user.is_authenticated and event.organizer == request.user %}
 								<th scope="col">
-									<a href="{% url 'item-update' item.id %}" class="btn btn-outline-secondary">Update</a>
-									<a href="{% url 'item-delete' item.id %}" class="btn btn-danger">Delete</a>
+									<a href="#" class="btn btn-outline-secondary mx-2">Update</a>
+									<a href="#" class="btn btn-danger">Delete</a>
 								</th>
 							{% endif %}
 
@@ -67,5 +130,6 @@
 
 
 	</div>
+	<br><br>
 
 {% endblock content %}

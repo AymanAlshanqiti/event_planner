@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="row my-3">
+
+		{% for event in booked_events %}
+			<div class="col-12 col-sm-6 col-md-4">
+				<div class="card my-3">
+					<div class="card-body text-center">
+						<h5 class="card-title">{{event.event.title}}</h5>
+						<p class="card-text">{{event.event.description}}</p>
+						<hr>
+						<p class="card-text">{{event.event.location}}</p>
+						<p class="card-text">{{event.event.datetime|date:"d M Y"}}</p>
+						<p class="card-text">{{event.event.datetime|date:"D | h:i A"}}</p>
+						<small class="pink_color">Organizer: {{event.user.username}}</small>
+						<hr>
+						<p class="card-text">Tickets: <span class="badge badge-light">{{event.ticket}}</span></p>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+
+	</div>
+	
+	<br><br>
+
+{% endblock content %}

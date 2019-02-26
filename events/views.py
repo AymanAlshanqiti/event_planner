@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from .forms import UserSignup, UserLogin, EventForm
@@ -80,6 +80,22 @@ def dashboard(request):
 	return render(request, 'events/dashboard.html', context)
 
 
+def user_booked_events(request):
+	if request.user.is_anonymous:
+		messages.success(request, 'You have to signin first!')
+		return redirect('login')
+
+	booked_events = BookedEvent.objects.filter(
+		Q(user__username__icontains = request.user.username)&
+		Q(event__datetime__lte = datetime.datetime.today())
+		).distinct()
+
+	context = {
+		'booked_events': booked_events
+	}
+	return render(request, 'booked_events/user_booked_events.html', context)
+
+
 def events_list(request):
 
 	if request.user.is_anonymous:
@@ -87,6 +103,17 @@ def events_list(request):
 		return redirect('login')
 
 	events = Event.objects.filter(datetime__gte = datetime.datetime.today() )
+	query = request.GET.get("search")
+
+	if query:
+		events = events.filter(
+			Q(datetime__gte = datetime.datetime.today())|
+			Q(title__icontains = query)|
+			Q(description__icontains = query)|
+			Q(organizer__username__icontains = query)
+			).distinct()
+
+
 
 	context = {
 		'events': events
@@ -98,9 +125,19 @@ def event_detail(request, event_id):
 
 	event = Event.objects.get(id=event_id)
 	tickets = event.bookedevents.all()
+
+	event_seats = event.seats
+	ticket_count = 0
+
+	for buyer in tickets:
+		ticket_count += buyer.ticket
+
+	tickets_left = event_seats - ticket_count
+
 	context = {
 		"event": event,
 		"tickets": tickets,
+		"tickets_left": tickets_left,
 	}
 	return render(request, 'events/detail.html', context)
 
@@ -147,3 +184,48 @@ def event_update(request, event_id):
 	"event": event,
 	}
 	return render(request, 'events/update.html', context)
+
+
+
+def booked_event(request):
+	if request.user.is_anonymous:
+		return redirect('login')
+
+	event_id = request.POST.get("event_id")
+	user_ticket_num = request.POST.get("ticket_num")
+	event = Event.objects.get(id=event_id)
+
+	tickets = event.bookedevents.all()
+	event_seats = event.seats
+	ticket_count = 0
+
+	for buyer in tickets:
+		ticket_count += buyer.ticket
+
+	tickets_left = event_seats - ticket_count
+
+	if int(user_ticket_num) > int(tickets_left):
+		messages.warning(request, 'sorry, not enough tickets left')
+		return redirect('event-detail', event_id)
+
+	elif  int(user_ticket_num) == 0:
+		messages.warning(request, 'enter valid number')
+		return redirect('event-detail', event_id)
+
+	else:
+		ticket = BookedEvent()
+		ticket.user = request.user
+		ticket.event = event
+		ticket.ticket = user_ticket_num
+		ticket.save()
+
+	context = {
+		"event" : event,
+		"tickets_left": tickets_left,
+	}
+
+	return render(request, 'events/detail.html', context)
+
+
+
+	#ticket_num

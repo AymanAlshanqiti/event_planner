@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="{% url 'events-list' %}">Django Event Planner</a>
+    <a class="navbar-brand" href="{% url 'events-list' %}">Entrepreneur Event Planner</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -15,17 +15,34 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+          <a class="nav-link" href="#">Welcome {{ request.user }}</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'event-create' %}">Create Event</a>
+
+        <div class="btn-group">
+          <button class="btn btn-light dropdown-toggle mx-4" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dashboard
+          </button>
+
+          <div class="dropdown-menu text-left">
+            <a class="dropdown-item" href="{% url 'event-create' %}"><i class="fas fa-pencil-alt flat_gray">&nbsp</i> Create Event</a>
+            <a class="dropdown-item" href="{% url 'dashboard' %}"><i class="fas fa-calendar-alt flat_gray">&nbsp</i>  My Own events</a>
+            <a class="dropdown-item" href="{% url 'user-booked-events' %}"><i class="fas fa-ticket-alt flat_gray">&nbsp</i> My booked events</a>
+            <a class="dropdown-item" href="#"><i class="fas fa-user-alt flat_gray">&nbsp</i> My Profile</a>
+          </div>
+        </div>
+
+
+
+
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search . ." value="{{request.GET.search}}">
+          <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Search</button>
+        </form>
+
+        <li class="nav-item mx-2">
+          <a class="btn btn-light" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt">&nbsp</i> Log out</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'dashboard' %}">My list of events</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">{{ request.user }}</a>
-        </li>
+
         {% endif %}
       </ul>
     </div>
