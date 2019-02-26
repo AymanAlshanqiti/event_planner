@@ -26,4 +26,3 @@ class EventForm(forms.ModelForm):
         	'datetime': forms.DateInput(attrs={'type': 'date'}),
         }
 
-			# widget should be for date and time

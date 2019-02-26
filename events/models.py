@@ -25,6 +25,9 @@ class Event(models.Model):
 	def get_absolute_url(self):
 		return reverse('event-detail' , args= [str(self.id)])
 
+	def tickets_left(self):
+		return self.seats - sum(self.bookedevents.all().values_list('ticket', flat=True))
+
 
 class BookedEvent(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "bookedevents")

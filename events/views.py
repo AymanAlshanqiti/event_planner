@@ -73,7 +73,8 @@ def dashboard(request):
 		messages.success(request, 'You have to signin first!')
 		return redirect('login')
 
-	events = Event.objects.filter(organizer__username__icontains = request.user.username)
+	# events = Event.objects.filter(organizer__username__icontains = request.user.username)
+	events = request.user.events.all()
 	context = {
 		'events': events,
 	}
@@ -200,7 +201,7 @@ def booked_event(request):
 
 	tickets_left = event_seats - ticket_count
 
-	if int(user_ticket_num) > int(tickets_left):
+	if int(user_ticket_num) > event.tickets_left():
 		messages.warning(request, 'sorry, not enough tickets left')
 		return redirect('event-detail', event_id)
 
