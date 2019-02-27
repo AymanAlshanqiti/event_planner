@@ -1,10 +1,11 @@
 
-# from django.shortcuts import render
-from events.models import Event
+from django.shortcuts import render
+from events.models import Event, BookedEvent
 import datetime
-# from rest_framework import status
-# from rest_framework.response import Response
-# from rest_framework.views import APIView
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from rest_framework.generics import (
 	ListAPIView,
@@ -18,23 +19,13 @@ from .serializers import (
 	EventsListSerializer,
 	EventCreateUpdateSerializer,
 	RegisterSerializer,
-	OrgBookedEventsList,
+	OrganizerlistSerializer,
+	BookedSerializer,
 )
 
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from .permissions import IsOrganizer
 from rest_framework.filters import OrderingFilter, SearchFilter
-
-
-
-
-
-# class Logout(APIView):
-#     def get(self, request, format=None):
-#         # simply delete the token to force a login
-#         request.user.auth_token.delete()
-#         return Response(status=status.HTTP_200_OK)
-
 
 class UpcomingEventsListView(ListAPIView):
 	serializer_class = EventsListSerializer
@@ -46,6 +37,8 @@ class UpcomingEventsListView(ListAPIView):
 		return queryset
 
 
+
+# As an organizer, I can see my events and the users who booked it:
 class OrganizersEventsListView(ListAPIView):
 	model = Event
 	serializer_class = EventsListSerializer
@@ -55,23 +48,29 @@ class OrganizersEventsListView(ListAPIView):
 		user = self.request.user
 		return user.events.all()
 
-#as organizer, I can see who booked "my" events:
-class OrganizersBookedEventsListView(ListAPIView):
 
-	model = Event
-	serializer_class = OrgBookedEventsList
+
+# As an organizer or a user, I can see my booked events:
+class MyBookedEventsListView(ListAPIView):
+
+	model = BookedEvent
+	serializer_class = OrganizerlistSerializer
 	permission_classes = [IsAuthenticated, IsOrganizer]
 
 	def get_queryset(self):
 		user = self.request.user
-		return user.events.all()
+		return user.bookedevents.all()
 
 
+
+# To signup
 class RegisterView(CreateAPIView):
 	serializer_class = RegisterSerializer
 	permission_classes= [AllowAny,]
 
 
+
+# To create a new event
 class EventCreateView(CreateAPIView):
 	serializer_class = EventCreateUpdateSerializer
 	permission_classes = [IsAuthenticated,]
@@ -80,6 +79,8 @@ class EventCreateView(CreateAPIView):
 		serializer.save(organizer=self.request.user)
 
 
+
+# To update our event
 class EventUpdateView(RetrieveUpdateAPIView):
 	queryset = Event.objects.all()
 	serializer_class = EventCreateUpdateSerializer
@@ -87,4 +88,4 @@ class EventUpdateView(RetrieveUpdateAPIView):
 	lookup_url_kwarg = 'event_id'
 	permission_classes = [IsAuthenticated, IsOrganizer]
 
-#as a user, I can see (a list) the events I booked:
+
