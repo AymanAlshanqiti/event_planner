@@ -13,8 +13,8 @@ from rest_framework.generics import (
 	RetrieveUpdateAPIView,
 	DestroyAPIView,
 	CreateAPIView,
-
 )
+
 from .serializers import (
 	EventsListSerializer,
 	EventCreateUpdateSerializer,
@@ -26,7 +26,6 @@ from .serializers import (
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from .permissions import IsOrganizer
 from rest_framework.filters import OrderingFilter, SearchFilter
-
 
 class UpcomingEventsListView(ListAPIView):
 	serializer_class = EventsListSerializer

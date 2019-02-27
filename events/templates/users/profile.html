@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-
+{{user_obj.following.all}}
+{{request.user.id}}
   <div class="row my-3">
     <div class="col-12">
       <div class="card mb-12">
@@ -13,7 +14,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-12 text-center">
-                  <h1 class="card-title mx-4">{{ user_obj.first_name }}  {{ user_obj.last_name }}</h1>
+                  <h2 class="card-title mx-4">{{ user_obj.first_name }}  {{ user_obj.last_name }}</h2>
                 </div>
 
               </div>
@@ -25,19 +26,54 @@
                 </div>
                 <div class="col-3">
                   <p class="card-text">Followers</p>
-                  <p class="card-text"><small class="text-muted">5</small></p>
+                  <p class="card-text"><small class="text-muted">{{following.count}}</small></p>
                 </div>
                 <div class="col-3">
                   <p class="card-text">Following</p>
-                  <p class="card-text"><small class="text-muted">5</small></p>
+                  <p class="card-text"><small class="text-muted">{{followers.count}}</small></p>
                 </div>
                 <div class="col-3">
                   {% if request.user == user_obj %}
                     <a href="{% url 'edit-profile' %}" class="btn btn-outline-secondary">Edit Profile</a>
                   {% else %}
-                    <button id="profile-{{user_obj.id}}" class="btn btn-primary" onclick="follow({{user_obj.id}})">Follow</button>
+                    <button id="profile-{{user_obj.id}}" class="btn btn-primary"  onclick="follow({{user_obj.id}})">
+
+                      {% if request.user.id in following %}
+                        Unfollow
+                      {% else %}
+                        Follow
+                      {% endif %}
+
+                    </button>
                   {% endif %}
                 </div>
+
+                  <script>
+                    function follow(user_id){
+                      var button = "#profile-" + user_id;
+
+                      $.ajax({
+
+                        type: "GET",
+
+                        url: "/follow/"+user_id+"/",
+
+                        success: function(data){
+                          if(data.following){
+                            $(button).text('Unfollow');
+                          }
+                          else {
+                            $(button).text('Follow');
+                          }
+                        },
+
+                        error: function(){
+                          console.log("Stop bro!");
+                        },
+
+                      })
+                    }      
+                  </script>
 
 
                 <div class="row">
@@ -88,22 +124,5 @@
 
   <br><br>
 
-
-  <script>
-    function follow(user_id){
-      $ajax({
-
-        type: "GET",
-        url: "/follow/"+user_id+"/",
-        success: function(data){
-          console.log(data)
-        },
-        error: function(){
-          console.log("Stop bro!")
-        },
-
-      })
-    }      
-  </script>
 
 {% endblock content %}
