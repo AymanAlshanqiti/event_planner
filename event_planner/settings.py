@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'events',
-
     'crispy_forms',
     'rest_framework',
 ]
