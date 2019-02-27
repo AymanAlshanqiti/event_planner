@@ -9,20 +9,6 @@ class UserSerializer(serializers.ModelSerializer):
 		model = User
 		fields = [ 'username']
 
-#this does not work
-# class UserLoginSerializer(serializers.Serializer):
-# 	token = serializers.CharField(allow_blank=True, read_only=True)
-
-# 	def validate(self, data):
-
-# 		jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
-# 		jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
-
-# 		payload = jwt_payload_handler(user_obj)
-# 		token = jwt_encode_handler(payload)
-
-# 		data["token"] = token
-# 		return data
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -31,10 +17,20 @@ class LocationSerializer(serializers.ModelSerializer):
 		fields = ['city']
 
 
+
+class BookedSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	class Meta:
+		model = BookedEvent
+		fields = '__all__'
+
+
+
 class EventsListSerializer(serializers.ModelSerializer):
 	location = LocationSerializer()
 	organizer= UserSerializer()
 
+	bookedevents= BookedSerializer(many=True)
 
 	update = serializers.HyperlinkedIdentityField(
 		view_name = "api-update",
@@ -42,10 +38,19 @@ class EventsListSerializer(serializers.ModelSerializer):
 		lookup_url_kwarg = "event_id"
 		)
 
-
 	class Meta:
 		model = Event
-		fields = ['update', 'organizer', 'title', 'location', 'description', 'datetime', 'seats']
+		fields = ['update', 'organizer', 'title', 'location', 'description', 'datetime', 'seats', 'bookedevents']
+
+
+
+class OrganizerlistSerializer(serializers.ModelSerializer):
+	user = UserSerializer()
+	event = EventsListSerializer()
+
+	class Meta:
+		model = BookedEvent
+		fields = '__all__'
 
 
 
@@ -64,6 +69,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 		return validated_data
 
 
+
 class EventCreateUpdateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Event
@@ -71,23 +77,5 @@ class EventCreateUpdateSerializer(serializers.ModelSerializer):
 
 
 
-class BookedSerializer(serializers.ModelSerializer):
-	user = UserSerializer()
-
-	class Meta:
-		model = BookedEvent
-		fields = ['user']
 
 
-# as an organizer, I can see who (user) booked for my event
-class OrgBookedEventsList(serializers.ModelSerializer):
-	bookedevents= BookedSerializer(many=True)
-
-	booked_count= serializers.SerializerMethodField()
-
-	class Meta:
-		model = Event
-		fields = ['title', 'booked_count', 'bookedevents']
-
-	def get_booked_count(self, obj):
-		return obj.bookedevents.count()
