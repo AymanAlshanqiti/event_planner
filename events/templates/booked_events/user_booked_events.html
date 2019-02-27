@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<h1 class="text-center">My booked events</h1>
+
 	<div class="row my-3">
 
 		{% for event in booked_events %}
@@ -13,9 +16,9 @@
 						<p class="card-text">{{event.event.location}}</p>
 						<p class="card-text">{{event.event.datetime|date:"d M Y"}}</p>
 						<p class="card-text">{{event.event.datetime|date:"D | h:i A"}}</p>
-						<small class="pink_color">Organizer: {{event.user.username}}</small>
+						<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: <a href="{% url 'user-profile' event.user.id %}" class="pink_color">{{event.user.username}}</a></small>
 						<hr>
-						<p class="card-text">Tickets: <span class="badge badge-light">{{event.ticket}}</span></p>
+						<p class="card-text">Booked tickets: &nbsp<span class="badge badge-warning"> {{event.ticket}}</span></p>
 					</div>
 				</div>
 			</div>

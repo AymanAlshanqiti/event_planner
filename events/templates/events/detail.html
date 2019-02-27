@@ -35,7 +35,7 @@
 											<div class="card-body text-center">
 												<p class="card-text">Tickets left: &nbsp<span class="badge badge-warning ">{{tickets_left}}</span></p>
 
-              									<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: {{event.organizer.username}}</small>
+              									<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: <a href="{% url 'user-profile' event.organizer.id %}" class="pink_color">{{event.organizer.username}}</a></small>
 											</div>
 										</div>
 
@@ -53,7 +53,7 @@
 													</div>
 													<div class="col-6">
 														<input type="text" name="event_id" class="form-control" hidden value="{{event.id}}">
-														<input type="number" name="ticket_num" class="form-control" min=0 max={{event.seats}}>
+														<input type="number" name="ticket_num" class="form-control" min=0 max={{tickets_left}}>
 													</div>
 
 											</div>

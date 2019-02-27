@@ -10,6 +10,7 @@ class Location(models.Model):
 		return self.city
 
 
+
 class Event(models.Model):
 	organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "events")
 	title = models.CharField(max_length=120)
@@ -29,11 +30,33 @@ class Event(models.Model):
 		return self.seats - sum(self.bookedevents.all().values_list('ticket', flat=True))
 
 
+
 class BookedEvent(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "bookedevents")
 	event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name= "bookedevents")
 	ticket = models.PositiveIntegerField()
 
-
 	def __str__(self):
 		return "%s --- %s --- %s" % (self.user.username, self.event.title, self.ticket)
+
+
+
+class Follow(models.Model):
+	# User who follow other user
+	follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "follower")
+
+	# User who's following by other user
+	following = models.ForeignKey(User, on_delete=models.CASCADE, related_name= "following")
+
+
+
+
+
+
+
+
+
+
+
+
+		

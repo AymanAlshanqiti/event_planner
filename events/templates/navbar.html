@@ -25,9 +25,9 @@
 
           <div class="dropdown-menu text-left">
             <a class="dropdown-item" href="{% url 'event-create' %}"><i class="fas fa-pencil-alt flat_gray">&nbsp</i> Create Event</a>
-            <a class="dropdown-item" href="{% url 'dashboard' %}"><i class="fas fa-calendar-alt flat_gray">&nbsp</i>  My Own events</a>
+            <a class="dropdown-item" href="{% url 'dashboard' %}"><i class="fas fa-calendar-alt flat_gray">&nbsp</i>  My own events</a>
             <a class="dropdown-item" href="{% url 'user-booked-events' %}"><i class="fas fa-ticket-alt flat_gray">&nbsp</i> My booked events</a>
-            <a class="dropdown-item" href="#"><i class="fas fa-user-alt flat_gray">&nbsp</i> My Profile</a>
+            <a class="dropdown-item" href="{% url 'user-profile' request.user.id %}"><i class="fas fa-user-alt flat_gray">&nbsp</i> My Profile</a>
           </div>
         </div>
 

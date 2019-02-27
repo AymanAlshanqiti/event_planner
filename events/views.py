@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
-from .forms import UserSignup, UserLogin, EventForm
-from .models import Event, BookedEvent
+from .forms import UserSignup, UserLogin, EventForm, UserEditForm
+from .models import Event, BookedEvent, Follow
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -12,6 +12,7 @@ import datetime
 
 def home(request):
 	return render(request, 'home.html')
+
 
 
 class Signup(View):
@@ -33,6 +34,7 @@ class Signup(View):
 			return redirect("home")
 		messages.warning(request, form.errors)
 		return redirect("signup")
+
 
 
 class Login(View):
@@ -61,11 +63,13 @@ class Login(View):
 		return redirect("login")
 
 
+
 class Logout(View):
 	def get(self, request, *args, **kwargs):
 		logout(request)
 		messages.success(request, "You have successfully logged out.")
 		return redirect("login")
+
 
 
 def dashboard(request):
@@ -78,7 +82,51 @@ def dashboard(request):
 	context = {
 		'events': events,
 	}
-	return render(request, 'events/dashboard.html', context)
+	return render(request, 'users/dashboard.html', context)
+
+
+
+def user_profile(request, user_id):
+	if request.user.is_anonymous:
+		messages.success(request, 'You have to signin first!')
+		return redirect('login')
+
+	user_obj = User.objects.get(id=user_id)
+
+	events = user_obj.events.all()
+	context = {
+		'events': events,
+		'user_obj': user_obj,
+	}
+	return render(request, 'users/profile.html', context)
+
+
+
+def edit_profile(request):
+	if request.user.is_anonymous:
+		messages.success(request, 'You have to signin first!')
+		return redirect('login')
+
+	form = UserEditForm(instance=request.user)
+
+	if request.method == "POST":
+		form = UserEditForm(request.POST, instance=request.user)
+		if form.is_valid():
+			user = form.save(commit=False)
+			user.set_password(user.password)
+			user.save()
+			messages.success(request, "You have successfully updated your profile.")
+			login(request, user)
+			return redirect("user-profile", request.user.id)
+
+		messages.warning(request, form.errors)
+		return redirect("user-profile", request.user.id)
+
+	context = {
+	"form": form,
+	}
+	return render(request, 'users/edit.html', context)
+
 
 
 def user_booked_events(request):
@@ -92,6 +140,29 @@ def user_booked_events(request):
 		'booked_events': booked_events
 	}
 	return render(request, 'booked_events/user_booked_events.html', context)
+
+
+
+def follow(request, user_id):
+	if request.user.is_anonymous:
+		messages.success(request, 'You have to signin first!')
+		return redirect('login')
+
+	user_following = User.objects.get(id=user_id)
+	follow, created = Follow.objects.get_or_create(follower=request.user, following=user_following)
+
+	if created:
+		followign = True
+	else:
+		following = False
+		follow.delete()
+
+	respose = {
+		"follow": follow,
+	}
+	return JsonResponse(respose)
+
+
 
 
 def events_list(request):
@@ -110,12 +181,11 @@ def events_list(request):
 			Q(organizer__username__icontains = query)
 			).distinct()
 
-
-
 	context = {
 		'events': events
 	}
 	return render(request, 'events/list.html', context)
+
 
 
 def event_detail(request, event_id):
@@ -139,6 +209,7 @@ def event_detail(request, event_id):
 	return render(request, 'events/detail.html', context)
 
 
+
 def event_create(request):
 	if request.user.is_anonymous:
 		return redirect('login')
@@ -158,6 +229,7 @@ def event_create(request):
 	return render(request, 'events/create.html', context)
 
 
+
 def event_update(request, event_id):
 	event = Event.objects.get(id=event_id)
 
@@ -166,7 +238,6 @@ def event_update(request, event_id):
 		return redirect("events-list")
 
 	form = EventForm(instance=event)
-
 
 	if request.method == "POST":
 		form = EventForm(request.POST, instance=event)
@@ -222,9 +293,6 @@ def booked_event(request):
 		"tickets_left": tickets_left,
 		"tickets": tickets,
 	}
-
 	return render(request, 'events/detail.html', context)
 
 
-
-	#ticket_num

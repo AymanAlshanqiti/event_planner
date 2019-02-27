@@ -2,6 +2,16 @@
   color: #C0043E;
 }
 
+a:hover { 
+  color: #C0043E;
+  text-decoration: none;
+}
+
+a:active {
+  color: #C0043E;
+  text-decoration: none;
+}
+
 .flat_gray {
 	color: #DEDBD0;
 }

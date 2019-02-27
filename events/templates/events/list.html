@@ -19,11 +19,9 @@
 						</div>
 						<div class="col-6 text-left">
 							<p class="card-text"><i class="fas fa-map-marker-alt flat_gray">&nbsp</i> {{event.location}}</p>
-							<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: {{event.organizer.username}}</small>
+							<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: <a href="{% url 'user-profile' event.organizer.id %}" class="pink_color">{{event.organizer.username}}</a></small>
 						</div>
 						</div>
-
-
 
 
 						<hr>
