@@ -1,10 +1,10 @@
 
-from django.shortcuts import render
+# from django.shortcuts import render
 from events.models import Event
 import datetime
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
+# from rest_framework import status
+# from rest_framework.response import Response
+# from rest_framework.views import APIView
 
 from rest_framework.generics import (
 	ListAPIView,
@@ -12,14 +12,13 @@ from rest_framework.generics import (
 	RetrieveUpdateAPIView,
 	DestroyAPIView,
 	CreateAPIView,
-
 )
+
 from .serializers import (
 	EventsListSerializer,
 	EventCreateUpdateSerializer,
 	RegisterSerializer,
 	OrgBookedEventsList,
-
 )
 
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
@@ -30,11 +29,11 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 
 
 
-class Logout(APIView):
-    def get(self, request, format=None):
-        # simply delete the token to force a login
-        request.user.auth_token.delete()
-        return Response(status=status.HTTP_200_OK)
+# class Logout(APIView):
+#     def get(self, request, format=None):
+#         # simply delete the token to force a login
+#         request.user.auth_token.delete()
+#         return Response(status=status.HTTP_200_OK)
 
 
 class UpcomingEventsListView(ListAPIView):

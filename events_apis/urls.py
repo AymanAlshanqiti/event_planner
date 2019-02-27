@@ -5,7 +5,7 @@ from django.conf import settings
 from events_apis.views import (
 	UpcomingEventsListView,
 	EventUpdateView,
-	Logout,
+	# Logout,
 	OrganizersEventsListView,
 	EventCreateView,
 	RegisterView,

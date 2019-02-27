@@ -6,7 +6,7 @@ from .forms import UserSignup, UserLogin, EventForm, UserEditForm
 from .models import Event, BookedEvent, Follow
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q 
 import datetime
 
 
@@ -92,11 +92,15 @@ def user_profile(request, user_id):
 		return redirect('login')
 
 	user_obj = User.objects.get(id=user_id)
+	followers = user_obj.follower.all().values_list('follower', flat=True)
+	following = user_obj.following.all()
 
 	events = user_obj.events.all()
 	context = {
 		'events': events,
 		'user_obj': user_obj,
+		'followers': followers,
+		'following': following,
 	}
 	return render(request, 'users/profile.html', context)
 
@@ -152,15 +156,15 @@ def follow(request, user_id):
 	follow, created = Follow.objects.get_or_create(follower=request.user, following=user_following)
 
 	if created:
-		followign = True
+		following = True
 	else:
 		following = False
 		follow.delete()
 
 	respose = {
-		"follow": follow,
+		"following": following,
 	}
-	return JsonResponse(respose)
+	return JsonResponse(respose, safe=False)
 
 
 
