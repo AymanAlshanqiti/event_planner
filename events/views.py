@@ -10,6 +10,9 @@ from django.db.models import Q
 import datetime
 from django.utils import timezone
 
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 def home(request):
 	return render(request, 'home.html')
@@ -87,19 +90,19 @@ def dashboard(request):
 
 
 
-def user_profile(request, user_id):
+def user_profile(request, organizer_id):
 	if request.user.is_anonymous:
 		messages.success(request, 'You have to signin first!')
 		return redirect('login')
 
-	user_obj = User.objects.get(id=user_id)
-	followers = user_obj.follower.all().values_list('follower', flat=True)
-	following = user_obj.following.all()
+	organizer_obj = User.objects.get(id=organizer_id)
+	followers = organizer_obj.follower.all().values_list('follower', flat=True)
+	following = organizer_obj.following.all()
 
-	events = user_obj.events.all()
+	events = organizer_obj.events.all()
 	context = {
 		'events': events,
-		'user_obj': user_obj,
+		'organizer_obj': organizer_obj,
 		'followers': followers,
 		'following': following,
 	}
@@ -237,7 +240,19 @@ def event_create(request):
 			event = form.save(commit=False)
 			event.organizer = request.user
 			event.save()
+
+			following = request.user.following.all().values_list('follower__email', flat=True)
+			subject = 'New Event Aleeert'
+			message = "Check out my new event: %s " %(event.title)
+			email_from = settings.EMAIL_HOST_USER
+			recipient_list = []
+			for user in following:
+				recipient_list.append(user)
+
+			send_mail( subject, message, email_from, recipient_list )
+			
 			return redirect('events-list')
+
 	context = {
 		"form":form,
 	}
@@ -287,21 +302,32 @@ def booked_event(request):
 
 	tickets_left = event_seats - ticket_count
 
-	if int(user_ticket_num) > event.tickets_left():
-		messages.warning(request, 'sorry, not enough tickets left')
-		return redirect('event-detail', event_id)
+	if user_ticket_num != "":
 
-	elif  int(user_ticket_num) == 0:
-		messages.warning(request, 'enter valid number')
-		return redirect('event-detail', event_id)
+		if int(user_ticket_num) > event.tickets_left():
+			messages.warning(request, 'sorry, not enough tickets left')
+			return redirect('event-detail', event_id)
+
+		elif  int(user_ticket_num) == 0:
+			messages.warning(request, 'enter valid number')
+			return redirect('event-detail', event_id)
+
+		else:
+			ticket = BookedEvent()
+			ticket.user = request.user
+			ticket.event = event
+			ticket.ticket = user_ticket_num
+			ticket.save()
+
+			subject = 'Thank you for buying a ticket'
+			message = " You've successfuly booked %s tickets for %s event " %(ticket.ticket, ticket.event.title)
+			email_from = settings.EMAIL_HOST_USER
+			recipient_list = [ticket.user.email]
+			send_mail( subject, message, email_from, recipient_list )
+			return redirect('event-detail', event_id)
 
 	else:
-		ticket = BookedEvent()
-		ticket.user = request.user
-		ticket.event = event
-		ticket.ticket = user_ticket_num
-		ticket.save()
-		return redirect('event-detail', event_id)
+		messages.warning(request, "Please Enter a valid ticket number")
 
 	context = {
 		"event" : event,
@@ -309,5 +335,16 @@ def booked_event(request):
 		"tickets": tickets,
 	}
 	return render(request, 'events/detail.html', context)
+
+
+
+
+def email(request, ):
+   subject = 'Thank you for registering to our site'
+   message = ' it  means a world to us '
+   email_from = settings.EMAIL_HOST_USER
+   recipient_list = ['ayman.alshanqiti@gmail.com','nujoodalmadi@gmail.com']
+   send_mail( subject, message, email_from, recipient_list )
+   return redirect('events-list')
 
 

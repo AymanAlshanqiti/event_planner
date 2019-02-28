@@ -24,6 +24,7 @@ from .serializers import (
 	BookedSerializer,
 	BookedCreateSerializer,
 	FollowingListSerializer,
+	FollowCreateSerializer,
 )
 
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
@@ -112,4 +113,25 @@ class FollowingListView(ListAPIView):
 		user = self.request.user
 		return user.follower.all()
 
+
+
+class FollowView(APIView):
+	serializer_class = FollowCreateSerializer
+	permission_classes = [IsAuthenticated,]
+
+	def perform_create(self, serializer):
+		serializer.save(follower=self.request.user)
+
+	# def get(self, request, user_id):
+	
+	# user_following = User.objects.get(id=user_id)
+	# follow, created = Follow.objects.get_or_create(follower=request.user, following=user_following)
+
+	# if created:
+	# 	following = True
+	# else:
+	# 	following = False
+	# 	follow.delete()
+	
+	
 

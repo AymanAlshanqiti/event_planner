@@ -11,6 +11,7 @@ from events_apis.views import (
 	MyBookedEventsListView,
 	BookTicketView,
 	FollowingListView,
+	FollowView,
 )
 
 from rest_framework_jwt.views import obtain_jwt_token 
@@ -26,6 +27,7 @@ urlpatterns = [
 
 	path('api/booked/create/', BookTicketView.as_view(), name='api-book-create'),
 	path('api/following/', FollowingListView.as_view(), name='api-following'),
+	path('api/following/create/', FollowView.as_view(), name='api-following-create'),
 
 	# Login using JWT library that comming from django rest framework
 	path('api/login/', obtain_jwt_token, name= 'api-login'),

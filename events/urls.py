@@ -15,7 +15,7 @@ urlpatterns = [
     ############ User urls ############
 
 	path('dashboard/', views.dashboard, name='dashboard'),
-	path('user/<int:user_id>/profile', views.user_profile, name='user-profile'),
+	path('user/<int:organizer_id>/profile', views.user_profile, name='user-profile'),
 	path('profile/edit/', views.edit_profile, name="edit-profile"),
 	path('user/bookedevents', views.user_booked_events, name='user-booked-events'),
 	path('follow/<int:user_id>/', views.follow, name='follow'),
@@ -29,4 +29,7 @@ urlpatterns = [
 	path('event/<int:event_id>/',views.event_detail ,name='event-detail'),
     path('event/<int:event_id>/update/', views.event_update, name='event-update'),
 	path('booked/', views.booked_event, name='booked'),
+
+
+	path('email/', views.email, name='send-email'),
 ]

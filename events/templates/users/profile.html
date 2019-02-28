@@ -14,7 +14,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-12 text-center">
-                  <h2 class="card-title mx-4">{{ user_obj.first_name }}  {{ user_obj.last_name }}</h2>
+                  <h2 class="card-title mx-4">{{ organizer_obj.first_name }}  {{ organizer_obj.last_name }}</h2>
                 </div>
 
               </div>
@@ -33,10 +33,10 @@
                   <p class="card-text"><small class="text-muted">{{followers.count}}</small></p>
                 </div>
                 <div class="col-3">
-                  {% if request.user == user_obj %}
+                  {% if request.user == organizer_obj %}
                     <a href="{% url 'edit-profile' %}" class="btn btn-outline-secondary">Edit Profile</a>
                   {% else %}
-                    <button id="profile-{{user_obj.id}}" class="btn btn-primary"  onclick="follow({{user_obj.id}})">
+                    <button id="profile-{{organizer_obj.id}}" class="btn btn-primary"  onclick="follow({{organizer_obj.id}})">
 
                       {% if request.user.id in following %}
                         Unfollow
@@ -60,6 +60,7 @@
 
                         success: function(data){
                           if(data.following){
+                            console.log("Hi");
                             $(button).text('Unfollow');
                           }
                           else {

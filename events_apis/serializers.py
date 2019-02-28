@@ -109,14 +109,22 @@ class BookedCreateSerializer(serializers.ModelSerializer):
 		exclude = ['user']
 
 
-
+# List of the users who I followed
 class FollowingListSerializer(serializers.ModelSerializer):
 	following = UserSerializer()
 
 	class Meta:
 		model = Follow
-		exclude = ['follower']
+		fields = ['following']
 		
+		
+# Follow some one
+class FollowCreateSerializer(serializers.ModelSerializer):
+	following = UserSerializer()
+
+	class Meta:
+		model = Follow
+		exclude = ['follower']
 		
 
 
