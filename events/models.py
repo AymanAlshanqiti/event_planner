@@ -37,7 +37,7 @@ class BookedEvent(models.Model):
 	ticket = models.PositiveIntegerField()
 
 	def __str__(self):
-		return "%s --- %s --- %s" % (self.user.username, self.event.title, self.ticket)
+		return "id = %s --- %s --- %s --- %s" % (self.id, self.user.username, self.event.title, self.ticket)
 
 
 

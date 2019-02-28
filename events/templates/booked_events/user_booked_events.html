@@ -6,19 +6,20 @@
 
 	<div class="row my-3">
 
-		{% for event in booked_events %}
+		{% for ticket in booked_events %}
 			<div class="col-12 col-sm-6 col-md-4">
 				<div class="card my-3">
 					<div class="card-body text-center">
-						<h5 class="card-title">{{event.event.title}}</h5>
-						<p class="card-text">{{event.event.description}}</p>
+						<h5 class="card-title">{{ticket.event.title}}</h5>
+						<p class="card-text">{{ticket.event.description}}</p>
 						<hr>
-						<p class="card-text">{{event.event.location}}</p>
-						<p class="card-text">{{event.event.datetime|date:"d M Y"}}</p>
-						<p class="card-text">{{event.event.datetime|date:"D | h:i A"}}</p>
-						<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: <a href="{% url 'user-profile' event.user.id %}" class="pink_color">{{event.user.username}}</a></small>
+						<p class="card-text">{{ticket.event.location}}</p>
+						<p class="card-text">{{ticket.event.datetime|date:"d M Y"}}</p>
+						<p class="card-text">{{ticket.event.datetime|date:"D | h:i A"}}</p>
+						<small class="pink_color"><i class="fas fa-user-tie flat_gray">&nbsp</i> Organizer: <a class="pink_color">{{ticket.event.organizer.username}}</a></small>
 						<hr>
-						<p class="card-text">Booked tickets: &nbsp<span class="badge badge-warning"> {{event.ticket}}</span></p>
+						<p class="card-text">Booked tickets: &nbsp<span class="badge badge-warning"> {{ticket.ticket}}</span></p>
+						<a href="{% url 'cancel-ticket' ticket.id %}" class="btn btn-danger">Cancel</a>
 					</div>
 				</div>
 			</div>

@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db.models import Q 
 import datetime
+from django.utils import timezone
 
 
 def home(request):
@@ -144,6 +145,16 @@ def user_booked_events(request):
 		'booked_events': booked_events
 	}
 	return render(request, 'booked_events/user_booked_events.html', context)
+
+
+
+def cancel_booked_events(request, ticket_id): 
+	if request.user.is_anonymous:
+		messages.success(request, 'You have to signin first!')
+		return redirect('login')
+
+	user_ticket = BookedEvent.objects.get(id= ticket_id).delete()
+	return redirect('user-booked-events')
 
 
 

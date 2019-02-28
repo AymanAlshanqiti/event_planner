@@ -19,6 +19,7 @@ urlpatterns = [
 	path('profile/edit/', views.edit_profile, name="edit-profile"),
 	path('user/bookedevents', views.user_booked_events, name='user-booked-events'),
 	path('follow/<int:user_id>/', views.follow, name='follow'),
+	path('ticket/<int:ticket_id>/cancel/', views.cancel_booked_events, name='cancel-ticket'),
 
 
 	############ Event urls ############
