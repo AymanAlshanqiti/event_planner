@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-{{user_obj.following.all}}
-{{request.user.id}}
+
   <div class="row my-3">
     <div class="col-12">
       <div class="card mb-12">
@@ -26,7 +25,7 @@
                 </div>
                 <div class="col-3">
                   <p class="card-text">Followers</p>
-                  <p class="card-text"><small class="text-muted">{{following.count}}</small></p>
+                  <p class="card-text"><small class="text-muted" id="followers-{{organizer_obj.id}}">{{following.count}}</small></p>
                 </div>
                 <div class="col-3">
                   <p class="card-text">Following</p>
@@ -36,7 +35,7 @@
                   {% if request.user == organizer_obj %}
                     <a href="{% url 'edit-profile' %}" class="btn btn-outline-secondary">Edit Profile</a>
                   {% else %}
-                    <button id="profile-{{organizer_obj.id}}" class="btn btn-primary"  onclick="follow({{organizer_obj.id}})">
+                    <button id="profile-{{organizer_obj.id}}" class="btn btn-primary"  onclick="follow({{organizer_obj.id}}, {{following.count}})">
 
                       {% if request.user.id in following %}
                         Unfollow
@@ -49,8 +48,9 @@
                 </div>
 
                   <script>
-                    function follow(user_id){
-                      var button = "#profile-" + user_id;
+                    function follow(user_id, followers_count){
+                      let button = "#profile-" + user_id;
+                      let small = "#followers-" + user_id
 
                       $.ajax({
 
@@ -60,11 +60,12 @@
 
                         success: function(data){
                           if(data.following){
-                            console.log("Hi");
                             $(button).text('Unfollow');
+                            $(small).text(data.following_count);
                           }
                           else {
                             $(button).text('Follow');
+                            $(small).text(data.following_count);
                           }
                         },
 

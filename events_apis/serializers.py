@@ -89,7 +89,12 @@ class SignupSerializer(serializers.ModelSerializer):
 		my_last_name = validated_data['last_name']
 		my_email = validated_data['email']
 		my_password = validated_data['password']
-		new_user = User(username=my_username)
+		new_user = User(
+			username=my_username, 
+			first_name=my_first_name,
+			last_name=my_last_name,
+			email=my_email,
+		)
 		new_user.set_password(my_password)
 		new_user.save()
 		return validated_data

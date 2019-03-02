@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from django.http import HttpResponse, JsonResponse, Http404
 
 from rest_framework.generics import (
 	ListAPIView,
@@ -114,14 +115,12 @@ class FollowingListView(ListAPIView):
 		return user.follower.all()
 
 
-class FollowView(APIView):
+class FollowView(CreateAPIView):
 
 	serializer_class = FollowCreateSerializer
 	permission_classes = [IsAuthenticated,]
 
 	def perform_create(self, serializer):
 		serializer.save(follower=self.request.user)
-
-	
 
 

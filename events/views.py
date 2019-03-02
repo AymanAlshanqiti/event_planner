@@ -96,8 +96,8 @@ def user_profile(request, organizer_id):
 		return redirect('login')
 
 	organizer_obj = User.objects.get(id=organizer_id)
-	followers = organizer_obj.follower.all().values_list('follower', flat=True)
-	following = organizer_obj.following.all()
+	followers = organizer_obj.follower.all().values_list('follower__id', flat=True)
+	following = organizer_obj.following.all().values_list('follower__id', flat=True)
 
 	events = organizer_obj.events.all()
 	context = {
@@ -175,8 +175,12 @@ def follow(request, user_id):
 		following = False
 		follow.delete()
 
+	following_count = user_following.following.all().count()
+	print(following_count)
+
 	respose = {
 		"following": following,
+		"following_count": following_count,
 	}
 	return JsonResponse(respose, safe=False)
 
